@@ -6,7 +6,10 @@ namespace EFConsole
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            using (var db = new MSSQLContext()) 
+            {
+                db.Database.EnsureCreated();
+            }
         }
     }
 }
