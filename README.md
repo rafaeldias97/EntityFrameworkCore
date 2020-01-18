@@ -131,5 +131,5 @@ namespace EFConsole {
 
 > dotnet ef migrations add Pessoa 
 
-> dotnet ef migrations database update
+> dotnet ef database update
 
