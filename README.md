@@ -2,7 +2,7 @@
 
 ![](https://ralmsdeveloper.github.io/assets/images/efcore.png)
 
-Olá pessoal, este artigo está sendo feito pra quem quer iniciar no Entity Framework Core e não faz ideia por onde começar, com isto, não estarei trazendo a melhor estrutura e me preocupando com boas praticas por questões didáticas. Então vamos iniciar.
+Olá pessoal, este artigo está sendo feito pra quem quer iniciar no Entity Framework Core e não faz ideia por onde começar, com isto, não estarei trazendo a melhor estrutura e me preocupando com boas práticas por questões didáticas. Então vamos iniciar.
 
 O que seria o Entity Framework Core?, onde habita?, o que faz ?. O Entity Framework Core é um dos muitos ORMs (Object-Relational Mapping) que do portugués seria (Mapeador Objeto Relacional), ele consegue mapear as propriedades da suas entidades em tableas do banco de dados.
 
@@ -131,5 +131,296 @@ namespace EFConsole {
 
 > dotnet ef migrations add Pessoa 
 
-> dotnet ef database update
+> dotnet ef migrations database update
 
+Ao realizar a migration, será criado uma tabela chamada "Pessoa", com os campos (id, nome e idade), para consultar no Azure Data Studio, execute o seguinte comando SQL:
+
+``` SQL
+USE dbmodel
+GO
+    SELECT * FROM pessoa
+```
+
+Após isto, se as colunas forem listadas, vamos criar os metodos de CRUD.
+
+Cadastrando uma Pessoa
+
+**Program.cs**
+
+``` c#
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Microsoft.EntityFrameworkCore;
+
+namespace EFConsole
+{
+    public class Program
+    {
+        // Instancia Context
+        MSSQLContext db = new MSSQLContext();
+        // Context da Entidade Pessoa
+        DbSet<Pessoa> pessoaCtx;
+        public Program()
+        {
+            pessoaCtx = db.Set<Pessoa>();
+        }
+        static void Main(string[] args)
+        {
+            var p = new Program();
+            /// Cadastrar Pessoa
+             p.CadastrarPessoa(new Pessoa {
+                 nome = "Rafael",
+                 idade = 22
+             });
+        }
+        // Metodo de cadastro de Pessoa
+        public Pessoa CadastrarPessoa (Pessoa p)
+        {
+            pessoaCtx.AddAsync(p);
+            db.SaveChanges();
+            return p;
+        }
+
+    }
+}
+
+```
+
+Consultando uma lista de pessoas
+
+**Program.cs**
+
+``` c#
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Microsoft.EntityFrameworkCore;
+
+namespace EFConsole
+{
+    public class Program
+    {
+        // Instancia Context
+        MSSQLContext db = new MSSQLContext();
+        // Context da Entidade Pessoa
+        DbSet<Pessoa> pessoaCtx;
+        public Program()
+        {
+            pessoaCtx = db.Set<Pessoa>();
+        }
+        static void Main(string[] args)
+        {
+            var p = new Program();
+            .
+            .
+            .
+            /// Consultar Pessoas
+             var pessoas = p.ConsultarPessoa(new Pessoa {
+                 nome = "Rafael",
+                 idade = 22
+             });
+             pessoas.ToList().ForEach((el) => {
+                 Console.WriteLine($"Id: {el.id}, Nome: {el.nome}, Idade: {el.idade}");
+             });
+            .
+            .
+            .
+        }
+        // Metodo de consulta de Pessoas
+        public IEnumerable<Pessoa> ConsultarPessoa (Pessoa p)
+        {
+            var res = pessoaCtx.ToList();
+            return res;
+        }
+
+    }
+}
+
+```
+
+Editar uma pessoa
+
+**Program.cs**
+
+``` c#
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Microsoft.EntityFrameworkCore;
+
+namespace EFConsole
+{
+    public class Program
+    {
+        // Instancia Context
+        MSSQLContext db = new MSSQLContext();
+        // Context da Entidade Pessoa
+        DbSet<Pessoa> pessoaCtx;
+        public Program()
+        {
+            pessoaCtx = db.Set<Pessoa>();
+        }
+        static void Main(string[] args)
+        {
+            var p = new Program();
+            .
+            .
+            .
+            /// Consultar Pessoas
+            p.EditarPessoa(new Pessoa {
+                id = 1,
+                nome = "Rafael Dias",
+                idade = 22
+            });
+            .
+            .
+            .
+        }
+        .
+        .
+        .
+        // Metodo de edição de Pessoas
+        public Pessoa EditarPessoa (Pessoa p)
+        {
+            pessoaCtx.Update(p);
+            db.SaveChanges();
+            return p;
+        }
+    }
+}
+
+```
+
+Deletar uma pessoa
+
+**Program.cs**
+
+``` c#
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Microsoft.EntityFrameworkCore;
+
+namespace EFConsole
+{
+    public class Program
+    {
+        // Instancia Context
+        MSSQLContext db = new MSSQLContext();
+        // Context da Entidade Pessoa
+        DbSet<Pessoa> pessoaCtx;
+        public Program()
+        {
+            pessoaCtx = db.Set<Pessoa>();
+        }
+        static void Main(string[] args)
+        {
+            var p = new Program();
+            .
+            .
+            .
+            /// Deletar Pessoa
+            p.DeletarPessoa(new Pessoa {
+                id = 1
+            });
+            .
+            .
+            .
+        }
+        .
+        .
+        .
+        // Metodo de deleção de Pessoas
+        public Pessoa DeletarPessoa (Pessoa p)
+        {
+            pessoaCtx.RemoveRange(p);
+            db.SaveChanges();
+            return p;
+        }
+    }
+}
+
+```
+
+A classe **Program.cs** fica assim:
+
+``` C#
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Microsoft.EntityFrameworkCore;
+
+namespace EFConsole
+{
+    public class Program
+    {
+        MSSQLContext db = new MSSQLContext();
+        DbSet<Pessoa> pessoaCtx;
+        public Program()
+        {
+            pessoaCtx = db.Set<Pessoa>();
+        }
+        static void Main(string[] args)
+        {
+            var p = new Program();
+            /// Cadastrar Pessoa
+            // p.CadastrarPessoa(new Pessoa {
+            //     nome = "Rafael",
+            //     idade = 22
+            // });
+
+            /// Consultar Pessoa
+            // var pessoas = p.ConsultarPessoa(new Pessoa {
+            //     nome = "Rafael",
+            //     idade = 22
+            // });
+            // pessoas.ToList().ForEach((el) => {
+            //     Console.WriteLine($"Id: {el.id}, Nome: {el.nome}, Idade: {el.idade}");
+            // });
+
+            /// Editar Pessoa
+            // p.EditarPessoa(new Pessoa {
+            //     id = 1,
+            //     nome = "Rafael Dias",
+            //     idade = 22
+            // });
+
+            /// Excluir Pessoa
+            // p.DeletarPessoa(new Pessoa {
+            //     id = 1
+            // });
+        }
+
+        public Pessoa CadastrarPessoa (Pessoa p)
+        {
+            pessoaCtx.AddAsync(p);
+            db.SaveChanges();
+            return p;
+        }
+
+        public Pessoa DeletarPessoa (Pessoa p)
+        {
+            pessoaCtx.RemoveRange(p);
+            db.SaveChanges();
+            return p;
+        }
+
+        public IEnumerable<Pessoa> ConsultarPessoa (Pessoa p)
+        {
+            var res = pessoaCtx.ToList();
+            return res;
+        }
+
+        public Pessoa EditarPessoa (Pessoa p)
+        {
+            pessoaCtx.Update(p);
+            db.SaveChanges();
+            return p;
+        }
+    }
+}
+
+```
+
+Para realizar os testes, basta descomentar as chamadas dos metodos.
