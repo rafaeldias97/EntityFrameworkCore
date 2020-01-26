@@ -1,8 +1,6 @@
-# Iniciando com Entity Framework Core
-
 ![](https://ralmsdeveloper.github.io/assets/images/efcore.png)
 
-Olá pessoal, este artigo está sendo feito pra quem quer iniciar no Entity Framework Core e não faz ideia por onde começar, com isto, não estarei trazendo a melhor estrutura e me preocupando com boas práticas por questões didáticas. Então vamos iniciar.
+Olá pessoal, este artigo está sendo feito para quem estiver com o intuito de iniciar no EF Core e não faz ideia por onde começar. Deste modo, não estarei trazendo a melhor estrutura e nem me preocupando com boas práticas por questões didáticas. Contudo, o artigo tem a intenção de explicar de forma clara e objetiva sobre o EF Core, assim iniciaremos o projeto.
 
 O que seria o Entity Framework Core?, onde habita?, o que faz ?. O Entity Framework Core é um dos muitos ORMs (Object-Relational Mapping) que do portugués seria (Mapeador Objeto Relacional), ele consegue mapear as propriedades da suas entidades em tableas do banco de dados.
 
@@ -67,7 +65,7 @@ Com o docker iniciado, abra o Azure Data Studio e conecte com o Server=localhost
 
 ## Codigo e Dependencias
 
-Para trabalhar com EFCore, devemos ter 4 dependencias instaladas:
+Para trabalhar com EF Core, devemos ter 4 dependencias instaladas:
 
 > dotnet add package Microsoft.EntityFrameworkCore.SqlServer
 
@@ -345,7 +343,7 @@ namespace EFConsole
 
 A classe **Program.cs** fica assim:
 
-``` C#
+``` c#
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -424,3 +422,5 @@ namespace EFConsole
 ```
 
 Para realizar os testes, basta descomentar as chamadas dos metodos.
+
+[Download do Projeto GitHub](https://github.com/rafaeldias97/EntityFrameworkCore)
